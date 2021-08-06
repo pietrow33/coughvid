@@ -62,12 +62,17 @@ def upload_model_to_gcp():
 
     blob = bucket.blob(STORAGE_LOCATION)
 
+    blob.upload_from_filename('X_test.npy')
+    blob.upload_from_filename('y_test.npy')
     blob.upload_from_filename('model.h5')
 
 
-def save_model(model):
+def save_model(model, X_test, y_test):
     """method that saves the model into a .joblib file and uploads it on Google Storage /models folder
     HINTS : use joblib library and google-cloud-storage"""
+
+    np.save('X_test.npy', X_test)
+    np.save('y_test.npy', y_test)
 
     # saving the trained model to disk is mandatory to then beeing able to upload it to storage
     # Implement here
@@ -77,32 +82,6 @@ def save_model(model):
     # Implement here
     upload_model_to_gcp()
     print(f"uploaded model.joblib to gcp cloud storage under \n => {STORAGE_LOCATION}")
-
-def upload_matrix_to_gcp():
-
-    client = storage.Client()
-
-    bucket = client.bucket(BUCKET_NAME)
-
-    blob = bucket.blob(MATRIX_LOCATION)
-
-    blob.upload_from_filename('confusion_matrix.png')
-
-def evaluate_model(model, X_test, y_test):
-    accuracy = model.evaluate(X_test)
-    print('n', 'Test_Accuracy:-', accuracy[1])
-    pred = model.predict(X_test)
-    y_pred = np.round(pred, 0)
-    y_true = y_test
-    print('confusion matrix')
-    print(confusion_matrix(y_true, y_pred))
-        #confusion matrix
-    f, ax = plt.subplots(figsize=(8,5))
-    sns.heatmap(confusion_matrix(y_true, y_pred), annot=True, fmt=".0f", ax=ax)
-    plt.xlabel("y_pred")
-    plt.ylabel("y_true")
-    plt.savefig("confusion_matrix.png")
-    upload_matrix_to_gcp()
     
 
 if __name__ == '__main__':
@@ -115,5 +94,5 @@ if __name__ == '__main__':
     model = train_model(X_train, y_train)
 
     # save trained model to GCP bucket (whether the training occured locally or on GCP)
-    save_model(model)
-    evaluate_model(model,X_test,y_test)
+    save_model(model, X_test, y_test)
+    
