@@ -8,21 +8,26 @@ from google.cloud import storage
 import io
 
 
-BUCKET_NAME = 'coughvid-vteste'
+BUCKET_NAME = 'coughvid-650'
 STORAGE_LOCATION = 'models/coughvid/model.h5'
-MATRIX_LOCATION = 'models/coughvid/confusion_matrix.png'
+x_LOCATION = 'models/coughvid/X_test.npy'
+y_LOCATION = 'models/coughvid/y_test.npy'
 
 def get_data():
     client = storage.Client()
-    bucket = client.get_bucket('coughvid-vteste')
+    bucket = client.get_bucket(BUCKET_NAME)
 
-    blob = bucket.get_blob('array2/data2.npy')
+    blob = bucket.get_blob('array/target.npz')
+    y = np.load(io.BytesIO(blob.download_as_string()))
+    y = y['arr_0']
+
+    blob = bucket.get_blob('array/data.npz')
     X = np.load(io.BytesIO(blob.download_as_string()))
-
-    blob2 = bucket.get_blob('array2/target2.npy')
-    y = np.load(io.BytesIO(blob2.download_as_string()))
+    X = X['arr_0']
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+    X_train = X_train / 255.
+    X_test = X_test / 255.
     return X_train, X_test, y_train, y_test
 
 def initialize_model():
@@ -60,10 +65,11 @@ def upload_model_to_gcp():
 
     bucket = client.bucket(BUCKET_NAME)
 
-    blob = bucket.blob(STORAGE_LOCATION)
-
+    blob = bucket.blob(x_LOCATION)
     blob.upload_from_filename('X_test.npy')
+    blob = bucket.blob(y_LOCATION)
     blob.upload_from_filename('y_test.npy')
+    blob = bucket.blob(STORAGE_LOCATION)
     blob.upload_from_filename('model.h5')
 
 
