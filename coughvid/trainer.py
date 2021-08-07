@@ -43,8 +43,8 @@ def initialize_model():
     model.add(layers.Conv2D(64, (3,3), activation='relu'))
     model.add(layers.MaxPooling2D(2,2))
     #fourth_convolution
-    #     tf.keras.layers.Conv2D(64, (3,3), activation='relu'),
-    #     tf.keras.layers.MaxPooling2D(2,2),
+    model.add(layers.Conv2D(64, (3,3), activation='relu'))
+    model.add(layers.MaxPooling2D(2,2))
     model.add(layers.Flatten())
     model.add(layers.Dropout(0.5))
     model.add(layers.Dense(256, activation='relu'))
@@ -56,7 +56,7 @@ def initialize_model():
 
 def train_model(X_train, y_train):
     model = initialize_model()
-    model.fit(X_train,y_train, batch_size=32,epochs=50)
+    model.fit(X_train,y_train, batch_size=32,epochs=100)
     return model
 
 def upload_model_to_gcp():
