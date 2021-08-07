@@ -57,7 +57,7 @@ pypi:
 
 ### GCP Storage - - - - - - - - - - - - - - - - - - - - - -
 
-BUCKET_NAME=coughvid-vteste
+BUCKET_NAME=coughvid-650
 
 ##### Data  - - - - - - - - - - - - - - - - - - - - - - - -
 
