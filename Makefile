@@ -57,7 +57,7 @@ pypi:
 
 ### GCP Storage - - - - - - - - - - - - - - - - - - - - - -
 
-BUCKET_NAME=coughvid-vteste
+BUCKET_NAME=coughvid-650
 
 ##### Data  - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -66,7 +66,7 @@ BUCKET_NAME=coughvid-vteste
 ##### Training  - - - - - - - - - - - - - - - - - - - - - -
 
 # will store the packages uploaded to GCP for the training
-BUCKET_TRAINING_FOLDER = 'trainings'
+BUCKET_TRAINING_FOLDER = trainings
 
 ##### Model - - - - - - - - - - - - - - - - - - - - - - - -
 
