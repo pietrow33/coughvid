@@ -34,7 +34,7 @@ def initialize_model():
     model = models.Sequential()
 
     #first_convolution
-    model.add(layers.Conv2D(16, (3,3), activation='relu', input_shape=(288, 432, 4)))
+    model.add(layers.Conv2D(16, (3,3), activation='relu', input_shape=(217, 334, 4)))
     model.add(layers.MaxPooling2D(2, 2))
     #second_convolution
     model.add(layers.Conv2D(32, (3,3), activation='relu'))
