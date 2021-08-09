@@ -9,6 +9,7 @@ numpy
 pandas
 scikit-learn
 statsmodels
+xboost=0.90
 
 # tests/linter
 black

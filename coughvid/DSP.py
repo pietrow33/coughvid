@@ -9,10 +9,10 @@ from scipy.signal import resample
 from scipy.signal import decimate
 from scipy.signal import spectrogram
 from scipy.signal.windows import get_window
-
+from coughvid.feature_class import features
 import os
 
-from feature_class import features 
+#from feature_class import features 
 
 
 def classify_cough(x, fs, model, scaler):
