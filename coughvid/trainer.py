@@ -56,9 +56,13 @@ def initialize_model():
 
 def train_model(X_train, y_train):
     model = initialize_model()
-    ers = callbacks.EarlyStopping(monitor ="recall", mode ="min", patience = 50, restore_best_weights = True)
-    model.fit(X_train,y_train, batch_size=32,epochs=500, validation_split = 0.1, callbacks = [ers])
+    value, counts = np.unique(y_train, return_counts=True)
+    weight_COVID = counts[0] / counts[1]
+    weights = {0: 1, 1: weight_COVID}
+    ers = callbacks.EarlyStopping(monitor ="val_recall", patience = 50, restore_best_weights = True)
+    model.fit(X_train,y_train, batch_size=16,epochs=500, validation_split = 0.25, callbacks = [ers], class_weight = weights)
     return model
+
 
 def upload_model_to_gcp():
 
