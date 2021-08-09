@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 import imageio
 import numpy as np
 from PIL import Image
-from tensorflow.keras.backend import expand_dims
 import pickle
 from coughvid.DSP import classify_cough
 import os
@@ -60,7 +59,7 @@ def transform_audio(audio, rate):
     X = X / 255.
     os.remove("./tempDir/user2.png")
 
-    X = np.array(expand_dims(X, axis=0))
+    X = np.array(X[np.newaxis])
     return X
 
 #Call cough detection function to get the probability of audio having cough

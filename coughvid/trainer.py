@@ -47,7 +47,7 @@ def initialize_model():
     model.add(layers.Dense(256, activation='relu'))
     model.add(layers.Dense(1, activation='sigmoid'))
     
-    opt = optimizers.Adam(learning_rate = 0.01, beta_1 = 0.9, beta_2 = 0.999)
+    opt = optimizers.Adam(learning_rate = 0.001, beta_1 = 0.9, beta_2 = 0.999)
     model.compile(loss='binary_crossentropy', optimizer = opt, metrics = ['accuracy', metrics.Recall()])
     
     return model
