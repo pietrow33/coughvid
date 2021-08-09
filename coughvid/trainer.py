@@ -1,7 +1,7 @@
 from sklearn.model_selection import train_test_split
 import pandas as pd
 import numpy as np
-from tensorflow.keras import layers
+from tensorflow.keras import layers, callbacks
 from tensorflow.keras import models
 from tensorflow.keras import metrics
 from google.cloud import storage
@@ -9,19 +9,19 @@ import io
 
 
 BUCKET_NAME = 'coughvid-650'
-STORAGE_LOCATION = 'models/coughvid/model.h5'
-x_LOCATION = 'models/coughvid/X_test.npy'
-y_LOCATION = 'models/coughvid/y_test.npy'
+STORAGE_LOCATION = 'models/coughvid/model_500.h5'
+x_LOCATION = 'models/coughvid/X_test_500.npy'
+y_LOCATION = 'models/coughvid/y_test_500.npy'
 
 def get_data():
     client = storage.Client()
     bucket = client.get_bucket(BUCKET_NAME)
 
-    blob = bucket.get_blob('array/target.npz')
+    blob = bucket.get_blob('array_reduced/target.npz')
     y = np.load(io.BytesIO(blob.download_as_string()))
     y = y['arr_0']
 
-    blob = bucket.get_blob('array/data.npz')
+    blob = bucket.get_blob('array_reduced/data.npz')
     X = np.load(io.BytesIO(blob.download_as_string()))
     X = X['arr_0']
 
@@ -50,13 +50,14 @@ def initialize_model():
     model.add(layers.Dense(256, activation='relu'))
     model.add(layers.Dense(1, activation='sigmoid'))
     
-    model.compile(loss='binary_crossentropy', optimizer='adam', metrics = ['accuracy',metrics.Recall()])
+    model.compile(loss='binary_crossentropy', optimizer='adam', metrics = ['accuracy', metrics.Recall()])
     
     return model
 
 def train_model(X_train, y_train):
     model = initialize_model()
-    model.fit(X_train,y_train, batch_size=32,epochs=100)
+    ers = callbacks.EarlyStopping(monitor ="recall", mode ="min", patience = 50, restore_best_weights = True)
+    model.fit(X_train,y_train, batch_size=32,epochs=500, validation_split = 0.1, callbacks = [ers])
     return model
 
 def upload_model_to_gcp():
@@ -66,23 +67,23 @@ def upload_model_to_gcp():
     bucket = client.bucket(BUCKET_NAME)
 
     blob = bucket.blob(x_LOCATION)
-    blob.upload_from_filename('X_test.npy')
+    blob.upload_from_filename('X_test_500.npy')
     blob = bucket.blob(y_LOCATION)
-    blob.upload_from_filename('y_test.npy')
+    blob.upload_from_filename('y_test_500.npy')
     blob = bucket.blob(STORAGE_LOCATION)
-    blob.upload_from_filename('model.h5')
+    blob.upload_from_filename('model_500.h5')
 
 
 def save_model(model, X_test, y_test):
     """method that saves the model into a .joblib file and uploads it on Google Storage /models folder
     HINTS : use joblib library and google-cloud-storage"""
 
-    np.save('X_test.npy', X_test)
-    np.save('y_test.npy', y_test)
+    np.save('X_test_500.npy', X_test)
+    np.save('y_test_500.npy', y_test)
 
     # saving the trained model to disk is mandatory to then beeing able to upload it to storage
     # Implement here
-    model.save("model.h5")
+    model.save("model_500.h5")
     print("Saved model to disk")
 
     # Implement here

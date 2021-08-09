@@ -66,7 +66,7 @@ BUCKET_NAME=coughvid-650
 ##### Training  - - - - - - - - - - - - - - - - - - - - - -
 
 # will store the packages uploaded to GCP for the training
-BUCKET_TRAINING_FOLDER = 'trainings'
+BUCKET_TRAINING_FOLDER = trainings
 
 ##### Model - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -100,3 +100,8 @@ gcp_submit_training:
 		--runtime-version=${RUNTIME_VERSION} \
 		--region ${REGION} \
 		--stream-logs
+
+#### Streamlit
+
+run_streamlit:
+	streamlit run app.py
