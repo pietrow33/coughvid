@@ -29,3 +29,6 @@ joblib
 memoized-property
 termcolor
 librosa
+
+#front-end
+streamlit
