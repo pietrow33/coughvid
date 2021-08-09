@@ -1,35 +1,38 @@
 # packaging
 pip>=9
-setuptools>=26
-twine
-wheel>=0.29
+# setuptools>=26
+# twine
+# wheel>=0.29
 
 # data science
 numpy
 pandas
 scikit-learn
-statsmodels
+# statsmodels
 xgboost==0.90
+tensorflow
+scipy
 
 # tests/linter
-black
-coverage
-flake8
-pytest
-yapf
+# black
+# coverage
+# flake8
+# pytest
+# yapf
 
 # API
-gcsfs
+# gcsfs
 google-cloud-storage
-mlflow
-s3fs
+# mlflow
+# s3fs
 
 # utilities
-six>=1.14
+# six>=1.14
 joblib
-memoized-property
-termcolor
+# memoized-property
+# termcolor
 librosa
+imageio
 
 #front-end
 streamlit

@@ -12,6 +12,9 @@ from coughvid.DSP import classify_cough
 import os
 import subprocess
 
+st.header('CoughVid')
+st.subheader('Este aplicativo dá um diagnóstico imédiato de COVID-19 pelo som da tosse. Por favor, clique no botão abaixo para gravar sua tosse. Em seguida clique em enviar')
+
 #Recieve the loaded file from streamlit
 uploaded_file = st.file_uploader("Upload File")
 
@@ -42,7 +45,7 @@ def transform_audio(audio, rate):
     S = librosa.feature.melspectrogram(y = audio, sr = rate, n_mels=128, fmax=8000)
     fig, ax = plt.subplots()
     S_dB = librosa.power_to_db(S, ref=np.max)
-    img = librosa.display.specshow(S_dB, sr=rate, fmax=8000, ax=ax)
+    img = display.specshow(S_dB, sr=rate, fmax=8000, ax=ax)
     ax.axis("off")
 
     plt.savefig('./tempDir/user.png', bbox_inches='tight', pad_inches = 0)
@@ -70,8 +73,16 @@ else:
     X = transform_audio(audio, rate)
     y = model.predict(X)
     print(y)
-
+    
     st.image(X)
+    
+    resultado = np.round(y[0][0], 0)
+ 
     st.audio(uploaded_file)
-    st.write(f"The probability of having COVID through Audio analysis is: {(y[0][0]*100):.2f}%")
-    st.write(f"Classification: {np.round(y[0][0],0)}")
+    st.write(f"The probability of having COVID through Audio analysis is: {(y[0][0] * 100):.2f}%")
+    st.write(f"Classification: {resultado}")
+    
+    if resultado == 1:
+        ('Existe uma grande probabilidade de você estar com a COVID-19. Entretanto, nosso aplicativo não é 100% seguro. Recomendamos que você faça um teste de laboratório')
+    else : 
+        ('A probabilidade de você estar com a COVID-19 é baixa. Entretanto como nosso aplicativo não é 100% recomendamos que você faça um teste de laboratório')
