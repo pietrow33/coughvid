@@ -32,7 +32,7 @@ else:
     audio, rate = librosa.load(uploaded_file, sr=None)
 
 #Load prediction model and cough detection model
-model = tf.keras.models.load_model('./notebooks/models_coughvid_model.h5')
+model = tf.keras.models.load_model('./models/models_coughvid_model.h5')
 loaded_model = pickle.load(open(os.path.join('./models', 'cough_classifier'), 'rb'))
 loaded_scaler = pickle.load(open(os.path.join('./models','cough_classification_scaler'), 'rb'))
 
