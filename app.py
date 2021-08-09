@@ -7,14 +7,28 @@ import imageio
 import numpy as np
 from PIL import Image
 from tensorflow.keras.backend import expand_dims
+import pickle
+from coughvid.DSP import classify_cough
+import os
+
 
 uploaded_file = st.file_uploader("Upload File")
 
 model = tf.keras.models.load_model('./notebooks/models_coughvid_model.h5')
 
-def transform_audio(audio):
+loaded_model = pickle.load(open(os.path.join('./models', 'cough_classifier'), 'rb'))
+loaded_scaler = pickle.load(open(os.path.join('./models','cough_classification_scaler'), 'rb'))
+
+audio, rate = librosa.load(uploaded_file)
+
+def cough_detect(audio, rate):
     
-    audio, rate = librosa.load(audio)
+    probability = classify_cough(audio, rate, loaded_model, loaded_scaler)
+    
+    return probability
+
+def transform_audio(audio, rate):
+    
     S = librosa.feature.melspectrogram(y = audio, sr = rate, n_mels=128, fmax=8000)
     fig, ax = plt.subplots()
     S_dB = librosa.power_to_db(S, ref=np.max)
@@ -36,14 +50,23 @@ def transform_audio(audio):
     
     return X
 
-X = transform_audio(uploaded_file)
+probability = cough_detect(audio, rate)
 
-y = model.predict(X)
+if probability <= 0.6:
+    st.write("Cough again bitch!")
+    st.write(probability)
+else:
+    X = transform_audio(audio, rate)
 
-print(y)
+    y = model.predict(X)
 
-st.image(X)
+    print(y)
 
-st.audio(uploaded_file)
+    st.image(X)
 
-st.write(y)
+    st.audio(uploaded_file)
+
+    st.write(y)
+
+    st.write(probability)
+    
