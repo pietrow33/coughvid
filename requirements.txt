@@ -1,17 +1,17 @@
 # packaging
 pip>=9
-# setuptools>=26
+setuptools>=26
 # twine
 # wheel>=0.29
 
 # data science
-numpy
-pandas
-scikit-learn
+numpy==1.19.5
+pandas==1.3.1
+scikit-learn==0.24.2
 # statsmodels
 xgboost==0.90
-tensorflow
-scipy
+tensorflow==2.5.0
+scipy==1.7.1
 
 # tests/linter
 # black
@@ -22,17 +22,17 @@ scipy
 
 # API
 # gcsfs
-google-cloud-storage
+google-cloud-storage==1.41.1
 # mlflow
 # s3fs
 
 # utilities
 # six>=1.14
-joblib
+joblib==1.0.1
 # memoized-property
 # termcolor
-librosa
-imageio
+librosa==0.8.1
+imageio==2.9.0
 
 #front-end
-streamlit
+streamlit==0.86.0
