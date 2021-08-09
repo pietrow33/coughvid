@@ -1,9 +1,7 @@
 from sklearn.model_selection import train_test_split
 import pandas as pd
 import numpy as np
-from tensorflow.keras import layers, callbacks
-from tensorflow.keras import models
-from tensorflow.keras import metrics
+from tensorflow.keras import layers, callbacks, metrics, models, optimizers
 from google.cloud import storage
 import io
 
@@ -50,7 +48,8 @@ def initialize_model():
     model.add(layers.Dense(256, activation='relu'))
     model.add(layers.Dense(1, activation='sigmoid'))
     
-    model.compile(loss='binary_crossentropy', optimizer='adam', metrics = ['accuracy', metrics.Recall()])
+    opt = tensorflow.keras.optimizers.Adam(learning_rate = 0.01, beta_1 = 0.9, beta_2 = 0.999)
+    model.compile(loss='binary_crossentropy', optimizer = opt, metrics = ['accuracy', metrics.Recall()])
     
     return model
 
