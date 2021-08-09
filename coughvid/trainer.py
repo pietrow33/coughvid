@@ -1,5 +1,4 @@
 from sklearn.model_selection import train_test_split
-import pandas as pd
 import numpy as np
 from tensorflow.keras import layers, callbacks, metrics, models, optimizers
 from google.cloud import storage
@@ -48,7 +47,7 @@ def initialize_model():
     model.add(layers.Dense(256, activation='relu'))
     model.add(layers.Dense(1, activation='sigmoid'))
     
-    opt = tensorflow.keras.optimizers.Adam(learning_rate = 0.01, beta_1 = 0.9, beta_2 = 0.999)
+    opt = optimizers.Adam(learning_rate = 0.01, beta_1 = 0.9, beta_2 = 0.999)
     model.compile(loss='binary_crossentropy', optimizer = opt, metrics = ['accuracy', metrics.Recall()])
     
     return model
@@ -57,7 +56,7 @@ def train_model(X_train, y_train):
     model = initialize_model()
     value, counts = np.unique(y_train, return_counts=True)
     weight_COVID = counts[0] / counts[1]
-    weights = {0: 1, 1: weight_COVID}
+    weights = {value[0]: 1, value[1]: weight_COVID}
     ers = callbacks.EarlyStopping(monitor ="val_recall", patience = 50, restore_best_weights = True)
     model.fit(X_train,y_train, batch_size=16,epochs=500, validation_split = 0.25, callbacks = [ers], class_weight = weights)
     return model
