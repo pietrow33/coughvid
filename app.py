@@ -6,7 +6,7 @@ import numpy as np
 from PIL import Image
 import pickle
 from coughvid.DSP import classify_cough
-import os
+# import os
 import subprocess
 import streamlit as st
 # import base64
@@ -65,8 +65,8 @@ if uploaded_file:
         args = shlex.split(cmd)
         process = subprocess.Popen(args, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = process.communicate()
-        os.remove("./tempDir/user.png")
-        os.remove("user2.png")
+        # os.remove("./tempDir/user.png")
+        # os.remove("user2.png")
 
         my_json = stdout.decode('utf8').replace("'", '"')
         print(my_json)
