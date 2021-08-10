@@ -1,0 +1,7 @@
+python-multipart==0.0.5
+fastapi==0.68.0
+uvicorn==0.14.0
+
+tensorflow==2.5.0
+numpy==1.19.5
+imageio==2.9.0

@@ -5,14 +5,13 @@ setuptools>=26
 # wheel>=0.29
 
 # data science
-numpy==1.19.5
-# pandas==1.3.1
-scikit-learn==0.24.2
+numpy
+pandas
+scikit-learn
 # statsmodels
 xgboost==0.90
-# tensorflow==2.5.0
-tensorflow-cpu==2.5.0
-scipy==1.7.1
+tensorflow
+scipy
 
 # tests/linter
 # black
@@ -23,17 +22,17 @@ scipy==1.7.1
 
 # API
 # gcsfs
-# google-cloud-storage==1.41.1
+google-cloud-storage
 # mlflow
 # s3fs
 
 # utilities
 # six>=1.14
-# joblib==1.0.1
+# joblib
 # memoized-property
 # termcolor
-librosa==0.8.1
-imageio==2.9.0
+librosa
+imageio
 
 #front-end
-streamlit==0.86.0
+streamlit
