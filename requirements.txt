@@ -5,13 +5,13 @@ setuptools>=26
 # wheel>=0.29
 
 # data science
-numpy
-pandas
-scikit-learn
+numpy==1.19.5
+#pandas
+scikit-learn==0.24.2
 # statsmodels
 xgboost==0.90
-tensorflow
-scipy
+#tensorflow
+scipy==1.4.1
 
 # tests/linter
 # black
@@ -22,7 +22,7 @@ scipy
 
 # API
 # gcsfs
-google-cloud-storage
+# google-cloud-storage
 # mlflow
 # s3fs
 
@@ -31,8 +31,8 @@ google-cloud-storage
 # joblib
 # memoized-property
 # termcolor
-librosa
-imageio
+librosa==0.8.1
+# imageio
 
 #front-end
-streamlit
+streamlit==0.86.0
