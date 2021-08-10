@@ -24,21 +24,21 @@ uploaded_file = st.file_uploader("Upload File")
 if uploaded_file:
     
     #Get file type, save and transform it to .wav if not already, then read audio
-    file_type = str(uploaded_file)
-    file_type = file_type[file_type.find("type")-7:file_type.find("type")-3]
-    if file_type != ".wav":
-        with open(os.path.join("tempDir",f"test{file_type}"),"wb") as f: 
-            f.write(uploaded_file.getbuffer())
-        subprocess.call(["ffmpeg", "-i",f"./tempDir/test{file_type}", "./tempDir/test.wav"])
-        audio, rate = librosa.load("./tempDir/test.wav", sr=None)
-        os.remove(f"./tempDir/test{file_type}")
-        os.remove("./tempDir/test.wav")
-    else:
-        audio, rate = librosa.load(uploaded_file, sr=None)
+    # file_type = str(uploaded_file)
+    # file_type = file_type[file_type.find("type")-7:file_type.find("type")-3]
+    # if file_type != ".wav":
+    #     with open(os.path.join("tempDir",f"test{file_type}"),"wb") as f: 
+    #         f.write(uploaded_file.getbuffer())
+    #     subprocess.call(["ffmpeg", "-i",f"./tempDir/test{file_type}", "./tempDir/test.wav"])
+    #     audio, rate = librosa.load("./tempDir/test.wav", sr=None)
+    #     os.remove(f"./tempDir/test{file_type}")
+    #     os.remove("./tempDir/test.wav")
+    # else:
+    #     audio, rate = librosa.load(uploaded_file, sr=None)
 
 
-    loaded_model = pickle.load(open(os.path.join('./models', 'cough_classifier'), 'rb'))
-    loaded_scaler = pickle.load(open(os.path.join('./models','cough_classification_scaler'), 'rb'))
+    # loaded_model = pickle.load(open(os.path.join('./models', 'cough_classifier'), 'rb'))
+    # loaded_scaler = pickle.load(open(os.path.join('./models','cough_classification_scaler'), 'rb'))
 
     def cough_detect(audio, rate):
         probability = classify_cough(audio, rate, loaded_model, loaded_scaler)
