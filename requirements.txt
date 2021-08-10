@@ -32,6 +32,7 @@ xgboost==0.90
 # memoized-property
 # termcolor
 librosa==0.8.1
+SoundFile==0.10.3.post1
 # imageio
 
 #front-end
