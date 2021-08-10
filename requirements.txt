@@ -12,6 +12,7 @@ scikit-learn==0.24.2
 xgboost==0.90
 #tensorflow
 scipy==1.7.1
+matplotlib==3.4.2
 
 # tests/linter
 # black
