@@ -1,6 +1,6 @@
 mkdir -p ~/.streamlit/
 
-HEROKU_EMAIL_ADDRESS = rodrigovgoulart@gmail.com
+HEROKU_EMAIL_ADDRESS = pietrow.pw@gmail.com
 
 
 echo "\
