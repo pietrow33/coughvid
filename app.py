@@ -245,14 +245,14 @@ st.sidebar.markdown('''
 
 Like other respiratory illnesses, COVID-19 major symptoms include breathing problems and cough.\
 Previous studies on respiratory conditions suggest that sound detection programs can be used to identify \
-other respiratory diseases such as asthma . This technique has been now employed in COVID-19 detection through \
+other respiratory diseases such as asthma¹ . This technique has been now employed in COVID-19 detection through \
 data analyses all over the world.
 
 In 2020, the Lausanne University collected a large sample of cough records from both healthy \
-and covid positive tested volunteers. This open-source data composes the aim of this analysis. 
+and covid positive tested volunteers. This open-source data² composes the aim of this analysis. 
 
 While Audio Classification is still an uncommon field in data science, the technology to represent sounds as \
-images through Mel Spectrograms (Mel scale) exists from the 1930’s. Recently, this topic gained attention \
+images through Mel Spectrograms³ (Mel scale) exists from the 1930’s. Recently, this topic gained attention \
 because of the COVID-19 pandemic, once it can detect different audio frequencies with a high level of accuracy, \
 making possible feature extraction from cough record samples.
 
@@ -263,7 +263,7 @@ samples and receive an instantaneous result: COVID-19 positive or negative.
 ¹DINKO Oletic, BILAS, Vedran, Energy-efficient respiratory sounds sensing for personal mobile asthma monitoring,\
 IEEE Sensors Journal 16, 23 (Dec. 2016).
 
-²https://github.com/virufy/virufy-data
+²https://www.nature.com/articles/s41597-021-00937-4
 
 ³Librosa Documentation
     
