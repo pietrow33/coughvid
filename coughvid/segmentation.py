@@ -1,7 +1,7 @@
 import numpy as np
 
 #Use old segmentation
-def segment_cough(x,fs, cough_padding=0.2,min_cough_len=0.2, th_l_multiplier = 0.1, th_h_multiplier = 2):
+def segment_cough(x,fs, cough_padding=0.2,min_cough_len=0.1, th_l_multiplier = 0.1, th_h_multiplier = 2):
     """Preprocess the data by segmenting each file into individual coughs using a hysteresis comparator on the signal power
     
     Inputs:
