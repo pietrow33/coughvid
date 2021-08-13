@@ -16,8 +16,6 @@ import json
 import ast
 import shlex
 import subprocess
-from tensorflow.keras.models import load_model
-import imageio
 from coughvid.segmentation import segment_cough
 
 st.set_page_config(
