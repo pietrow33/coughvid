@@ -144,88 +144,87 @@ def post_process(trim, audio_size, max_audio_size, rate):
 uploaded_file = st.file_uploader("Upload File")
 
 if uploaded_file:
-    
-    #Get file type, save and transform it to .wav if not already, then read audio
+     #Get file type, save and transform it to .wav if not already, then read audio
     file_type = str(uploaded_file)
     file_type = file_type[file_type.find("type")-7:file_type.find("type")-3]
     if file_type != ".wav":
-        with open(os.path.join("tempDir",f"test{file_type}"),"wb") as f: 
-            f.write(uploaded_file.getbuffer())
-        subprocess.call(["ffmpeg", "-i",f"./tempDir/test{file_type}", "./tempDir/test.wav"])
-        audio, rate = librosa.load("./tempDir/test.wav", sr=None)
-        os.remove(f"./tempDir/test{file_type}")
-        os.remove("./tempDir/test.wav")
-    else:        
+        st.warning("Sorry, we are only accepting .wav files for now. Please, upload again.")
+    else:
         audio, rate = librosa.load(uploaded_file, sr=None)
         
-    loaded_model = pickle.load(open(os.path.join('./models', 'cough_classifier'), 'rb'))
-    loaded_scaler = pickle.load(open(os.path.join('./models','cough_classification_scaler'), 'rb'))
+        loaded_model = pickle.load(open(os.path.join('./models', 'cough_classifier'), 'rb'))
+        loaded_scaler = pickle.load(open(os.path.join('./models','cough_classification_scaler'), 'rb'))
 
-    #Call cough detection function to get the probability of audio having cough
-    probability = cough_detect(audio, rate)
+        #Call cough detection function to get the probability of audio having cough
+        probability = cough_detect(audio, rate)
 
-    #Asks for new audio if cough detection level is below 60%, else predicts with the model to the given audio
-    if probability <= 0.6:
-        st.audio(uploaded_file)
-        st.warning("Please record another audio. No cough detected.")
-    else:
-        # resultado = transform_audio(audio, rate)
-        trim, audio_size = audios_trim(audio, rate)
-        new_trim = post_process(trim, audio_size, max_audio_size = 3, rate = rate)
+        #Asks for new audio if cough detection level is below 60%, else predicts with the model to the given audio
+        if probability <= 0.6:
+            st.audio(uploaded_file)
+            st.warning("Please record another audio. No cough detected.")
+        else:
+            # resultado = transform_audio(audio, rate)
+            trim, audio_size = audios_trim(audio, rate)
+            new_trim = post_process(trim, audio_size, max_audio_size = 3, rate = rate)
+            
+            S = librosa.feature.melspectrogram(y = new_trim, sr = rate, n_mels=128, fmax=8000)
+            fig, ax = plt.subplots()
+            S_dB = librosa.power_to_db(S, ref=np.max)
+            img = display.specshow(S_dB, sr=rate, fmax=8000, ax=ax)
+            ax.axis("off")
+            plt.savefig('./tempDir/user.png', bbox_inches='tight', pad_inches = 0)
+            plt.close()
+            
+            img2 = Image.open('./tempDir/user.png')
+            img2 = img2.resize((223, 163),Image.ANTIALIAS)
+            img2.save('user2.png',optimize=True,quality=95)
+            
+            fig, ax = plt.subplots()
+            img = display.specshow(S_dB, x_axis='time', y_axis='mel', sr=rate, fmax=8000, ax=ax)
+            fig.colorbar(img, ax=ax, format='%+2.0f dB')
+            ax.set(title='Mel-frequency spectrogram')
+            plt.savefig('./tempDir/user.png', transparent = True)
+            plt.close()
         
-        S = librosa.feature.melspectrogram(y = new_trim, sr = rate, n_mels=128, fmax=8000)
-        fig, ax = plt.subplots()
-        S_dB = librosa.power_to_db(S, ref=np.max)
-        img = display.specshow(S_dB, sr=rate, fmax=8000, ax=ax)
-        ax.axis("off")
-        plt.savefig('./tempDir/user.png', bbox_inches='tight', pad_inches = 0)
-        plt.close()
-        
-        img2 = Image.open('./tempDir/user.png')
-        img2 = img2.resize((223, 163),Image.ANTIALIAS)
-        img2.save('user2.png',optimize=True,quality=95)
-        
-        fig, ax = plt.subplots()
-        img = display.specshow(S_dB, x_axis='time', y_axis='mel', sr=rate, fmax=8000, ax=ax)
-        fig.colorbar(img, ax=ax, format='%+2.0f dB')
-        ax.set(title='Mel-frequency spectrogram')
-        plt.savefig('./tempDir/user.png', transparent = True)
-        plt.close()
-
-        st.write("This is your cough's Mel spectogram! A spectrogram is a visualization of the frequency \
+            st.write("This is your cough's Mel spectogram! A spectrogram is a visualization of the frequency \
             spectrum of a signal, which is the frequency range that is contained by the signal. \
                 The Mel scale mimics how the human ear works. The Mel spectrogram is a spectrogram that is converted to a Mel scale. ")
-        st.image('./tempDir/user.png', use_column_width=True)
-        X = imageio.imread('user2.png')
-        print("esse foi")
+            st.image('./tempDir/user.png', use_column_width=True)
+            
+            #https://coughvid-test-cs2qj3qyha-ew.a.run.app/predict
+            
+            cmd = "curl -X 'POST' 'https://coughvid-api-cs2qj3qyha-ew.a.run.app/predict' -H 'accept: application/json' -H 'Content-Type: multipart/form-data' \
+            -F 'file=@user2.png;type=image/png'"
+            
+            args = shlex.split(cmd)
+            process = subprocess.Popen(args, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            stdout, stderr = process.communicate()
+            os.remove("./tempDir/user.png")
+            os.remove("user2.png")
+
+            my_json = stdout.decode('utf8').replace("'", '"')
+            print(my_json)
+            print('- ' * 20)
+
+            # Load the JSON to a Python list & dump it back out as formatted JSON
+            data = json.loads(my_json)
+            response = json.dumps(data, indent=4, sort_keys=True)
+            response = ast.literal_eval(response)
+            print(response)
+            
+            # resultado = resultado['pred']
         
-        X = X / 255.
-        X = np.array(X[np.newaxis])
-        
-        model = load_model("./models/model_03.h5")
-        print("esse foi também")
-        
-        y = model.predict(X)
-        
-        resultado = float(np.round(y[0][0], 0))
-        
-        
-        print(f"ESSE AQUIIIII   {resultado}")
-        print(type(resultado))
-        
-        # resultado = resultado['pred']
-    
-        st.audio(uploaded_file)
-        
-        if resultado == 1:
-            st.write(f"Test result: COVID-19 positive")
-            st.error("There is a great chance of you being COVID-19 positive. However, our model is not \
-                100% accurate. If you are experiencing symptoms, we recommend that you get tested.")
-        else :
-            st.write(f"Test result: Healthy")
-            st.success("Nice! The chance of you being COVID-19 positive is low. However, our model is not \
-                100% accurate. If you are experiencing symptoms, we recommend that you get tested.")
-            st.balloons()
+            st.audio(uploaded_file)
+            
+            if response['pred'] == 1:
+                st.write(f"Test result: COVID-19 positive")
+                st.error("There is a great chance of you being COVID-19 positive. However, our model is not \
+                    100% accurate. If you are experiencing symptoms, we recommend that you get tested.")
+            else :
+                st.write(f"Test result: Healthy")
+                st.success("Nice! The chance of you being COVID-19 positive is low. However, our model is not \
+                    100% accurate. If you are experiencing symptoms, we recommend that you get tested.")
+                st.balloons()
 
 
 st.write('''If you want to learn more, check out the side bar.''') #\n
